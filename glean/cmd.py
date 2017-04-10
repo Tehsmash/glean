@@ -150,6 +150,20 @@ def _set_rh_bonding(name, interface, distro, results):
         # RedHat does not add any specific configuration to the master
         # interface. All configuration is done in the slave ifcfg files.
         if 'bond_slaves' in interface:
+            results += "BONDING_MASTER=yes\n"
+            bonding_options = ""
+            miimon = interface.get('bond_miimon')
+            if miimon:
+                bonding_options += "miimon=%s " % miimon
+            mode = interface.get('bond_mode')
+            if mode:
+                bonding_options += "mode=%s " % mode
+            hashp = interface.get('bond_xmit_hash_policy')
+            if hashp:
+                bonding_options += "xmit_hash_policy=%s " % hashp
+            if bonding_options:
+                results += 'BONDING_OPTS="%s"\n' % bonding_options
+            results = results.replace("HWADDR", "MACADDR")
             return results
 
         results += "SLAVE=yes\n"
@@ -170,6 +184,7 @@ def _set_rh_vlan(name, interface, distro):
             etherdevice=name.split('.')[0])
     else:
         results += "VLAN=yes\n"
+        results = results.replace("HWADDR", "MACADDR")
 
     return results
 

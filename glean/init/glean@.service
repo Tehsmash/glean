@@ -3,12 +3,10 @@ Description=Glean for interface %I
 Before=network-pre.target
 Wants=network-pre.target
 
-ConditionPathExists=!/etc/sysconfig/network-scripts/ifcfg-%I
-
 [Service]
 Type=oneshot
 User=root
-ExecStartPre=%%GLEANSH_PATH%%/glean.sh %I
+ExecStartPre=%%GLEANSH_PATH%%/glean.sh
 ExecStart=/sbin/ifup %I
 RemainAfterExit=true
 
